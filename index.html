@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ancient Greek Thinkers — PhD Resource (Vaibhav Tiwari)</title>
+  <style>
+    /* ---------- Visual theme (modern, professional) ---------- */
+    :root{
+      --bg:#071029; --card:#0b1220; --muted:#9fb4c9;
+      --accent1:#7c3aed; --accent2:#06b6d4; --glass:rgba(255,255,255,0.03);
+      --card-radius:14px;
+      --maxw:1100px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,var(--bg),#021426);color:#e6eef8;min-height:100vh}
+    .wrap{max-width:var(--maxw);margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+    .brand{background:linear-gradient(90deg,var(--accent1),var(--accent2));padding:10px 14px;border-radius:10px;font-weight:800}
+    .head-text{line-height:1}
+    .head-text h1{margin:0;font-size:20px}
+    .head-text p{margin:0;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border-radius:var(--card-radius); padding:18px; border:1px solid var(--glass); box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .search{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    .philos-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    .phil{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.02);cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+    .phil .meta{font-size:13px;color:var(--muted);margin-top:6px}
+    .phil.selected{outline:3px solid rgba(124,58,237,0.14);box-shadow:0 10px 30px rgba(124,58,237,0.06)}
+    .small{font-size:13px;color:var(--muted)}
+    details{margin-top:12px}
+    .mcq-list{margin-top:12px}
+    .qcard{padding:12px;border-radius:10px;margin-bottom:10px;background:linear-gradient(180deg, rgba(255,255,255,0.006), transparent);border:1px solid rgba(255,255,255,0.02)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border:none;color:white;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    aside .card{position:sticky;top:20px}
+    .answers{margin-top:8px;padding:10px;border-radius:8px;background:rgba(6,182,212,0.06);color:#bfeaf5;display:none}
+    .kw-badge{display:inline-block;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);font-size:13px;margin-right:6px;margin-bottom:6px}
+    footer{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
+    @media (max-width:980px){ .grid{grid-template-columns:1fr} .philos-list{grid-template-columns:1fr} aside .card{position:static} }
+    /* small helper */
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">Vaiedu</div>
+      <div class="head-text">
+        <h1>Ancient Greek Thinkers — Thales → Anaxagoras</h1>
+        <p>Designed by Vaibhav Tiwari • Department Of Philosophy • PhD Scholar (Philosophy of Science)</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <main class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <strong>Interactive Resource</strong>
+            <div class="small">Select philosophers, practice UGC-NET style MCQs, export notes</div>
+          </div>
+          <div class="small">Interactive • Offline • Single-file</div>
+        </div>
+
+        <input id="search" class="search" placeholder="Search philosopher / keyword (e.g., 'atom', 'nous')">
+
+        <div class="philos-list" id="philos-list">
+          <!-- injected -->
+        </div>
+
+        <details open>
+          <summary style="font-weight:700">Short Summaries (quick view)</summary>
+          <div style="margin-top:10px" id="quick-summaries"></div>
+        </details>
+
+        <hr style="margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+
+        <h3>UGC-NET Style MCQs (10) — Detailed Explanations</h3>
+        <div class="mcq-list" id="mcq-list">
+          <!-- injected -->
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="revealAll">Reveal All Explanations</button>
+          <button class="btn ghost" id="exportBtn">Export Selected (JSON)</button>
+          <button class="btn ghost" id="downloadScore" title="Download last quiz result as text">Download Last Result</button>
+          <div style="margin-left:auto" class="small muted">Tip: use checkboxes to pick philosophers and filter quiz.</div>
+        </div>
+
+      </main>
+
+      <aside>
+        <div class="card">
+          <h4>Selected Philosopher(s)</h4>
+          <div id="selected-box" class="small muted">None selected</div>
+
+          <hr style="margin:10px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+
+          <h4>Quick Keywords</h4>
+          <div id="kw-box" class="small muted">No selection</div>
+
+          <hr style="margin:10px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+
+          <h4>How to run (Dcoder)</h4>
+          <div class="small muted">
+            1) Create file <code>index.html</code><br>
+            2) Paste this whole code and Run in HTML mode.<br>
+            3) Use export button to download JSON of selections.<br>
+          </div>
+
+        </div>
+      </aside>
+    </div>
+
+    <footer>© Vaibhav Tiwari — Department Of Philosophy — PhD Scholar</footer>
+  </div>
+
+<script>
+/* ================= DATA ================= */
+const philosophers = [
+  {id:'thales', name:'Thales', summary:'Thales (c.624–546 BCE) — water as primary principle (archê). Early naturalistic explanations and scientific attitude.', keywords:['archê','water','naturalism','Ionian']},
+  {id:'anaximander', name:'Anaximander', summary:"Anaximander — 'apeiron' (the boundless) as origin; early cosmology, maps, proto-evolutionary suggestions.", keywords:['apeiron','cosmology','origin','proto-evolution']},
+  {id:'anaximenes', name:'Anaximenes', summary:'Anaximenes — air as primary; change explained by condensation & rarefaction.', keywords:['air','condensation','rarefaction','mechanism']},
+  {id:'pythagoras', name:'Pythagoras', summary:'Pythagoras — numbers and mathematical harmony as the structure of reality; religious-mathematical school.', keywords:['numbers','harmony','mathematics','Pythagoreanism']},
+  {id:'heraclitus', name:'Heraclitus', summary:"Heraclitus — doctrine of flux (panta rhei), fire and unity of opposites; introduced 'Logos'.", keywords:['flux','logos','unity','fire']},
+  {id:'parmenides', name:'Parmenides', summary:'Parmenides — Being is one and unchanging; change is illusory; important for ontology.', keywords:['being','ontology','unchanging','metaphysics']},
+  {id:'empedocles', name:'Empedocles', summary:'Empedocles — four roots/elements (earth, water, air, fire) and two forces Love/Strife explaining mixture and separation.', keywords:['four elements','love','strife','cosmogony']},
+  {id:'leucippus', name:'Leucippus', summary:'Leucippus — early atomist: indivisible atoms and void explain plurality and change.', keywords:['atom','void','atomism','plurality']},
+  {id:'democritus', name:'Democritus', summary:'Democritus — developed atomism; atoms+void; mechanistic explanations; perception vs reality issues.', keywords:['atomism','void','determinism','epistemology']},
+  {id:'anaxagoras', name:'Anaxagoras', summary:"Anaxagoras — introduced 'nous' (mind) as ordering principle; homoeomeria: everything contains parts of everything.", keywords:['nous','mind','homoeomeria','cosmic order']}
+];
+
+const mcqs = [
+  {q:"Which pre-Socratic philosopher proposed water as the primary principle (archê)?",
+   opts:["Thales","Pythagoras","Parmenides","Anaxagoras"], a:0,
+   ex:"Thales is traditionally credited with water as archê — earliest natural principle (reported by later doxographers).", rel:['thales']},
+
+  {q:"Which thinker introduced the 'apeiron' as the origin of all things?",
+   opts:["Anaximenes","Anaximander","Heraclitus","Empedocles"], a:1,
+   ex:"Anaximander posited the apeiron (the indefinite/boundless) as the source from which opposites arise.", rel:['anaximander']},
+
+  {q:"Who argued that Being is one and change is illusory?",
+   opts:["Heraclitus","Democritus","Parmenides","Leucippus"], a:2,
+   ex:"Parmenides used logical argument to claim true Being is unchanging; change is appearance.", rel:['parmenides']},
+
+  {q:"Who emphasized 'panta rhei' (all things flow)?",
+   opts:["Heraclitus","Thales","Pythagoras","Empedocles"], a:0,
+   ex:"Heraclitus stressed constant flux and unity of opposites; used Logos to describe order.", rel:['heraclitus']},
+
+  {q:"The atom/void theory is attributed to which pair?",
+   opts:["Thales & Anaximenes","Leucippus & Democritus","Pythagoras & Heraclitus","Anaxagoras & Empedocles"], a:1,
+   ex:"Leucippus and Democritus formulated atomism: indivisible atoms in the void explain plurality.", rel:['leucippus','democritus']},
+
+  {q:"Who proposed the four elements and two forces Love/Strife?",
+   opts:["Empedocles","Anaximenes","Pythagoras","Parmenides"], a:0,
+   ex:"Empedocles' model uses four roots and Love/Strife to explain mixing and separation.", rel:['empedocles']},
+
+  {q:"Who introduced 'nous' as a cosmic ordering principle?",
+   opts:["Anaxagoras","Heraclitus","Leucippus","Thales"], a:0,
+   ex:"Anaxagoras used 'nous' (mind) to account for cosmic order and differentiation.", rel:['anaxagoras']},
+
+  {q:"Pythagoras is best known for emphasizing which idea?",
+   opts:["Numbers as the principle of reality","Atoms and void","Being as unchanging","Nous as cosmic mind"], a:0,
+   ex:"Pythagorean thought links numbers and harmony to the structure of reality and cosmos.", rel:['pythagoras']},
+
+  {q:"Which philosopher explained change by condensation and rarefaction of air?",
+   opts:["Anaximenes","Anaximander","Empedocles","Democritus"], a:0,
+   ex:"Anaximenes proposed air and processes like condensation/rarefaction to account for differences in things.", rel:['anaximenes']},
+
+  {q:"The classic contrast 'being vs becoming' pairs which thinkers?",
+   opts:["Pythagoras & Thales","Parmenides & Heraclitus","Empedocles & Democritus","Anaxagoras & Leucippus"], a:1,
+   ex:"Parmenides (being) and Heraclitus (becoming) provide the foundational contrast for metaphysics.", rel:['parmenides','heraclitus']}
+];
+
+/* ================= UI build ================= */
+const philosListEl = document.getElementById('philos-list');
+const quickSummariesEl = document.getElementById('quick-summaries');
+const selectedBox = document.getElementById('selected-box');
+const kwBox = document.getElementById('kw-box');
+const mcqListEl = document.getElementById('mcq-list');
+
+let selected = new Set();
+let lastQuizResult = null;
+
+// render philosophers
+function renderPhilos() {
+  philosListEl.innerHTML = '';
+  quickSummariesEl.innerHTML = '';
+  philosophers.forEach((p, idx) => {
+    const div = document.createElement('label');
+    div.className = 'phil';
+    div.innerHTML = `
+      <input type="checkbox" data-id="${p.id}" style="margin-right:8px; margin-top:3px"/>
+      <div style="flex:1">
+        <strong>${p.name}</strong>
+        <div class="meta">${p.keywords.join(' • ')}</div>
+        <div class="small" style="margin-top:8px">${p.summary}</div>
+      </div>
+    `;
+    // click on whole card toggles checkbox
+    div.querySelector('input').addEventListener('change', (e)=>{
+      toggleSelected(p.id, e.target.checked);
+      e.stopPropagation();
+    });
+    div.addEventListener('click', (e)=>{
+      const cb = div.querySelector('input');
+      cb.checked = !cb.checked;
+      cb.dispatchEvent(new Event('change'));
+    });
+    philosListEl.appendChild(div);
+
+    // quick summary lines
+    const s = document.createElement('div');
+    s.innerHTML = `• <strong>${p.name}</strong>: ${p.summary}`;
+    quickSummariesEl.appendChild(s);
+  });
+}
+renderPhilos();
+
+function toggleSelected(id, on) {
+  const allCards = Array.from(document.querySelectorAll('.phil'));
+  const pIdx = philosophers.findIndex(x => x.id === id);
+  const card = allCards[pIdx];
+  if (on) { selected.add(id); card.classList.add('selected'); } else { selected.delete(id); card.classList.remove('selected'); }
+  updateSelectedBox();
+}
+
+function updateSelectedBox(){
+  if (selected.size === 0) {
+    selectedBox.textContent = 'None selected';
+    kwBox.textContent = 'No selection';
+    return;
+  }
+  selectedBox.innerHTML = '';
+  kwBox.innerHTML = '';
+  selected.forEach(id=>{
+    const p = philosophers.find(x=>x.id===id);
+    const el = document.createElement('div');
+    el.innerHTML = `<strong>${p.name}</strong><div class="small muted">${p.summary}</div>`;
+    selectedBox.appendChild(el);
+    // keywords
+    p.keywords.forEach(k=>{
+      const kb = document.createElement('span');
+      kb.className = 'kw-badge';
+      kb.textContent = k;
+      kwBox.appendChild(kb);
+    });
+  });
+}
+
+/* ============== MCQ render =============== */
+function renderMcqs() {
+  mcqListEl.innerHTML = '';
+  mcqs.forEach((m, idx)=>{
+    const q = document.createElement('div'); q.className='qcard';
+    q.innerHTML = `<div><strong>Q${idx+1}.</strong> ${m.q}</div>`;
+    const optsWrap = document.createElement('div'); optsWrap.style.marginTop='8px';
+    m.opts.forEach((o,i)=>{
+      const id = `q${idx}_opt${i}`;
+      const label = document.createElement('label'); label.style.display='block'; label.style.marginTop='6px';
+      label.innerHTML = `<input type="checkbox" data-q="${idx}" data-i="${i}" style="margin-right:8px"/> ${String.fromCharCode(65+i)}. ${o}`;
+      // checkbox toggles - make it single-select by unchecking others of same q
+      label.querySelector('input').addEventListener('change', (ev)=>{
+        if (ev.target.checked) {
+          document.querySelectorAll(`input[data-q="${idx}"]`).forEach(c=>{ if (c !== ev.target) c.checked = false; });
+        }
+      });
+      optsWrap.appendChild(label);
+    });
+    q.appendChild(optsWrap);
+
+    const btnWrap = document.createElement('div'); btnWrap.style.marginTop='8px';
+    const showBtn = document.createElement('button'); showBtn.className='btn ghost'; showBtn.textContent='Show Answer & Explanation';
+    const tryBtn = document.createElement('button'); tryBtn.className='btn'; tryBtn.style.marginLeft='8px'; tryBtn.textContent='Try Question';
+    btnWrap.appendChild(showBtn); btnWrap.appendChild(tryBtn);
+    q.appendChild(btnWrap);
+
+    const ansDiv = document.createElement('div'); ansDiv.className='answers'; ansDiv.id = 'ans-'+idx;
+    ansDiv.innerHTML = `<strong>Answer:</strong> ${String.fromCharCode(65 + m.a)}. ${m.opts[m.a]}<div style="margin-top:6px">${m.ex}</div>`;
+    q.appendChild(ansDiv);
+
+    showBtn.addEventListener('click', ()=>{ ansDiv.style.display = ansDiv.style.display === 'block' ? 'none' : 'block'; });
+    tryBtn.addEventListener('click', ()=>{ runSingleQuestion(idx); });
+
+    mcqListEl.appendChild(q);
+  });
+}
+renderMcqs();
+
+/* ============== Quiz functions ============== */
+function runSingleQuestion(idx) {
+  const q = mcqs[idx];
+  const choices = document.querySelectorAll(`input[data-q="${idx}"]`);
+  // clear previous
+  choices.forEach(c=>c.checked=false);
+  alert(`Try Q${idx+1} in the page: select an option and then press 'Show Answer & Explanation' to reveal feedback.`);
+}
+
+document.getElementById('revealAll').addEventListener('click', ()=>{
+  document.querySelectorAll('.answers').forEach(a=>a.style.display='block');
+});
+
+/* ============ Export selected =========== */
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  if (selected.size === 0) { alert('Please select at least one philosopher to export.'); return; }
+  const data = { exportedBy:'Vaibhav Tiwari', department:'Department Of Philosophy', role:'PhD Scholar (Philosophy of Science)', timestamp:new Date().toISOString(), selected:[] };
+  selected.forEach(id=>{
+    const p = philosophers.find(x=>x.id===id);
+    data.selected.push({id:p.id, name:p.name, summary:p.summary, keywords:p.keywords});
+  });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'selected_philosophers.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+
+/* ============ Download last result (placeholder) =========== */
+document.getElementById('downloadScore').addEventListener('click', ()=>{
+  if (!lastQuizResult) { alert('No quiz result available yet. Use the page to try questions and reveal answers.'); return; }
+  const blob = new Blob([lastQuizResult], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download='last_quiz_result.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+
+/* ============ Search =========== */
+document.getElementById('search').addEventListener('input', (e)=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.phil').forEach((node, i)=>{
+    const text = node.textContent.toLowerCase();
+    node.style.display = text.includes(q) ? '' : 'none';
+  });
+});
+
+/* ============ Filter MCQs by selected philosophers (optional helper) =========== */
+function filterMcqsBySelected() {
+  if (selected.size === 0) return mcqs;
+  const out = mcqs.filter(m => m.rel.some(r => selected.has(r)));
+  return out.length ? out : mcqs; // fallback to all if filter yields none
+}
+
+/* Optional: allow user to take an actual quiz (all or selected) in-page via prompt flow */
+function takeQuizFlow() {
+  const pool = filterMcqsBySelected();
+  const n = pool.length;
+  if (!confirm(`Start quiz with ${n} questions (selected-filter applied)? Click OK to proceed.`)) return;
+  let score = 0;
+  for (let i=0;i<pool.length;i++){
+    const m = pool[i];
+    const answer = prompt(`Q${i+1}: ${m.q}\n\nOptions:\n${m.opts.map((o,j)=> (String.fromCharCode(65+j)+'. '+o)).join('\n')}\n\nEnter A/B/C/D (or cancel to stop):`);
+    if (!answer) { alert('Quiz stopped.'); break; }
+    const a = answer.trim().toUpperCase();
+    const idx = a.charCodeAt(0) - 65;
+    if (idx === m.a) { score++; alert('Correct!'); } else { alert(`Incorrect. Correct: ${String.fromCharCode(65+m.a)}. ${m.opts[m.a]}\n\nExplanation:\n${m.ex}`); }
+  }
+  alert(`Quiz finished. Score: ${score}/${n}`);
+  lastQuizResult = `Score: ${score}/${n}\nTaken: ${new Date().toISOString()}`;
+}
+
+/* small UI addition: keyboard shortcut 'Q' to start quick quiz */
+document.addEventListener('keydown', (e)=>{ if (e.key.toLowerCase() === 'q') takeQuizFlow(); });
+
+/* For accessibility: expose console message */
+console.log("Interactive page loaded. Tip: press 'q' to start a quick quiz flow (uses browser prompts).");
+
+</script>
+
+</body></html>
